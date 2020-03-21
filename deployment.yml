@@ -1,0 +1,48 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: crawler-news
+  namespace: crawler
+spec:
+  schedule: "*/30 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - args:
+                - python3
+                - run.py
+              env:
+                - name: PGSQL_DATABASE
+                  value: scrape_book
+                - name: PGSQL_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: pgsql
+                      key: host
+                - name: PGSQL_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: pgsql
+                      key: password
+                - name: PGSQL_PORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: pgsql
+                      key: port
+                - name: PGSQL_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: pgsql
+                      key: user
+              image: germey/crawler-news
+              name: crawler-news
+              resources:
+                limits:
+                  memory: "200Mi"
+                  cpu: "150m"
+                requests:
+                  memory: "200Mi"
+                  cpu: "150m"
+          restartPolicy: OnFailure
