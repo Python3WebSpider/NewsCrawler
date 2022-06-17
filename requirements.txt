@@ -1,4 +1,4 @@
-scrapy==1.8.1
+scrapy==2.6.1
 Django==2.2.24
 django-cors-headers==3.2.0
 djangorestframework==3.11.2
